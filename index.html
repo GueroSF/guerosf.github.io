@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Интерпретатор HQ9+</title>
+	<style type="text/css">
+		input {
+			border: none;
+		}
+		input:focus {
+			border: none;
+			outline: none;
+		}
+	</style>
+	<script type="text/javascript">
+	window.onload = () => {
+		const clon = (elem) => {
+			let parent = elem.closest('.cmd');
+			let clone = parent.cloneNode(true);
+			clone.querySelector('input').value = "";
+			parent.innerHTML = '<span>Команда> </span><span class="lastCmd">'+elem.value+'</span>';
+			document.body.insertBefore(clone,null);
+			count = 0;
+		}
+		const output = (input, value) => {
+			let div = document.createElement('div');
+			switch (input){
+					case 'H': 
+						div.innerHTML = 'Hello, world!';
+						document.body.insertBefore(div,null);
+						break;
+					case 'Q':
+						div.innerHTML = value;
+						document.body.insertBefore(div,null);
+						break;
+					case '9':
+						let text = '99 bottles of beer on the wall<br/>'
+						document.body.insertBefore(div,null);
+						for (let b = 98; b>0; b--){
+							text += b+' bottles of beer!<br/>'
+						}
+						div.innerHTML = text;
+						document.body.insertBefore(div,null);
+						break;
+					case '+':
+						let inc = 0;
+						inc++;
+						break;
+					default:
+						div.innerHTML = 'Syntax error';
+						document.body.insertBefore(div,null);
+						break;
+				}
+		}
+		document.body.addEventListener('keypress',function(e){
+			if (e.code == 'Enter'){
+				let elem = this.querySelector('#cmd');
+				for (let i = 0; i < elem.value.length; i++) {
+					output(elem.value[i], elem.value);
+				}
+				clon(elem);
+				document.querySelector('input').focus();
+			}
+		});
+		let count = 0;
+		document.body.addEventListener('keyup',function(e){
+			let enter = document.querySelectorAll('.lastCmd');
+			if (enter.length!=0){
+				if (e.keyCode==38){
+					cmd.value = enter[count].innerText;
+					count++;
+				} else if (e.keyCode==40){
+					cmd.value = enter[count].innerText;
+					count--;
+				}
+				if (count<0){
+					count = 0;
+				} else if (count>=enter.length){
+					count = enter.length-1;
+				}
+			}
+		});
+	}
+</script>
+</head>
+<body>
+	<div class="cmd">
+		<span>Команда> </span><input id="cmd" type="text" autofocus="true">
+	</div>
+</body>
+
+</html>
