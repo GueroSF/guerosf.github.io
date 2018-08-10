@@ -1,77 +1,112 @@
-window.onload = () => {
-  const clon = (elem) => {
-    let parent = elem.closest('.cmd');
-    let clone = parent.cloneNode(true);
-    clone.querySelector('input').value = '';
-    parent.innerHTML = '<span>Команда> </span><span class="lastCmd">' + elem.value + '</span>';
-    document.body.insertBefore(clone, null);
-    count = 0;
-  };
-
-  const output = (input, value, callback) => {
-    switch (input) {
-      case 'H':
-        callback('Hello, world!');
-        break;
-      case 'Q':
-        callback(value);
-        break;
-      case '9':
-        let text = '99 bottles of beer on the wall<br/>';
-        for (let b = 98; b > 0; b--) {
-          text += b + ' bottles of beer!<br/>';
+window.onload = function () {
+    var answerElement = document.querySelector('.js-answer');
+    // const clon = (elem) => {
+    //   let parent = elem.closest('.js-cli');
+    //   let clone = parent.cloneNode(true);
+    //   clone.querySelector('input').value = '';
+    //   parent.innerHTML = '<span>Команда> </span><span class="lastCmd">' + elem.value + '</span>';
+    //   document.body.insertBefore(clone, null);
+    //   count = 0;
+    // };
+    var execute = function (input) {
+        var output = function (input, value) {
+            var data = {
+                break: false,
+                repeat: false,
+                text: ''
+            };
+            switch (input) {
+                case 'H':
+                    data.text = 'Hello, world!';
+                    break;
+                case 'Q':
+                    data.text = value;
+                    break;
+                case '9':
+                    data.repeat = countBottle !== 1;
+                    data.text = countBottle-- + ' bottles of beer on the wall';
+                    break;
+                case '+':
+                    var inc = 0;
+                    inc++;
+                    break;
+                default:
+                    data.break = true;
+                    data.text = 'Syntax error';
+                    break;
+            }
+            return data;
+        };
+        var r = function (command, value) {
+            data = output(command, value);
+            li = document.createElement('li');
+            li.innerText = data.text;
+            ul.appendChild(li);
+            if (data.repeat) {
+                r(command, value);
+            }
+            return data.break;
+        };
+        var ul = document.createElement('ul');
+        var li, data, countBottle = 99;
+        for (var i = 0, len = input.length; i < len; i++) {
+            if (r(input[i], input)) {
+                break;
+            }
         }
-        callback(text);
-        break;
-      case '+':
-        let inc = 0;
-        inc++;
-        break;
-      default:
-        callback(0);
-        break;
-    }
-  };
-
-  document.body.addEventListener('keypress', (e) => {
-    if (e.code == 'Enter') {
-      let elem = document.querySelector('#cmd');
-      for (let i = 0; i < elem.value.length; i++) {
-        output(elem.value[i], elem.value, (data) => {
-          if (data == 0) {
-            let div = document.createElement('div');
-            div.innerHTML = 'Syntax error';
-            document.body.appendChild(div);
-            return i = elem.value.length;
-          } else {
-            let div = document.createElement('div');
-            div.innerHTML = data;
-            document.body.appendChild(div);
-          }
-        });
-      }
-      clon(elem);
-      document.querySelector('input').focus();
-    }
-  });
-
-  let count = 0;
-
-  document.body.addEventListener('keyup', (e) => {
-    let enter = document.querySelectorAll('.lastCmd');
-    if (enter.length != 0) {
-      if (e.keyCode == 38) {
-        cmd.value = enter[count].innerText;
-        count++;
-      } else if (e.keyCode == 40) {
-        cmd.value = enter[count].innerText;
-        count--;
-      }
-      if (count < 0) {
-        count = 0;
-      } else if (count >= enter.length) {
-        count = enter.length - 1;
-      }
-    }
-  });
+        return ul;
+    };
+    document.querySelector('.js-cli').addEventListener('submit', function (e) {
+        e.preventDefault();
+        var inputCmd = this[0].value;
+        this[0].value = null;
+        var div = answerElement.cloneNode(true);
+        div.classList.remove('css-hidden');
+        div.querySelector('.js-input_command').innerHTML = inputCmd;
+        div.querySelector('.js-answer').appendChild(execute(inputCmd));
+        this.insertBefore(div, this.lastElementChild);
+        // document.getElementById('js-cmd_input-active').focus({preventScroll:true});
+        console.dir(this[0].parentElement);
+        // console.dir(parent);
+    });
+    // document.body.addEventListener('keypress', (e) => {
+    //   if (e.code == 'Enter') {
+    //     let elem = document.querySelector('.input');
+    //     for (let i = 0; i < elem.value.length; i++) {
+    //       output(elem.value[i], elem.value, (data) => {
+    //         if (data == 0) {
+    //           let div = document.createElement('div');
+    //           div.innerHTML = 'Syntax error';
+    //           document.body.appendChild(div);
+    //           return i = elem.value.length;
+    //         } else {
+    //           let div = document.createElement('div');
+    //           div.innerHTML = data;
+    //           document.body.appendChild(div);
+    //         }
+    //       });
+    //     }
+    //     clon(elem);
+    //     document.querySelector('input').focus();
+    //   }
+    // });
+    // let count = 0;
+    //
+    // document.body.addEventListener('keyup', (e) => {
+    //   let enter = document.querySelectorAll('.lastCmd');
+    //   if (enter.length != 0) {
+    //     if (e.keyCode == 38) {
+    //       cmd.value = enter[count].innerText;
+    //       count++;
+    //     } else if (e.keyCode == 40) {
+    //       cmd.value = enter[count].innerText;
+    //       count--;
+    //     }
+    //     if (count < 0) {
+    //       count = 0;
+    //     } else if (count >= enter.length) {
+    //       count = enter.length - 1;
+    //     }
+    //   }
+    // });
 };

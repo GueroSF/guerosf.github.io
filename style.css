@@ -5,3 +5,48 @@ input:focus {
     border: none;
     outline: none;
 }
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0 8px;
+    display: grid;
+    grid-template-columns: 100px 1fr 100px;
+    grid-template-rows: 40px 1fr 30px;
+    grid-template-areas:
+            ". h ."
+            ". m ."
+            "f f f";
+}
+
+header {
+    grid-area: h;
+}
+main {
+    grid-area: m;
+}
+footer {
+    grid-area: f;
+}
+
+main dl.css-description dt::after {
+    content: ":";
+}
+.css-hidden {
+    display: none;
+}
+
+.css-cli {
+    height: 250px;
+    overflow: auto;
+    border: 1px solid silver;
+}
+
+/*.site {*/
+    /*min-height: 100%;*/
+    /*display: grid;*/
+
+/*}*/

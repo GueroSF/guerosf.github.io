@@ -8,9 +8,44 @@
 	<script type="text/javascript" src="script.js"></script>
 </head>
 <body>
-	<div class="cmd">
-		<span>Команда> </span><input id="cmd" type="text" autofocus="true">
-	</div>
+    <header>
+        <h2>Интерпретатор HQ9+</h2>
+    </header>
+    <main>
+        <section>
+            <h4>Описание</h4>
+            <div>
+                <dl class="css-description">
+                    <dt>Команда «H»</dt>
+                    <dd>выводит сообщение «Hello, world!»</dd>
+                    <dt>Команда «Q»</dt>
+                    <dd>выводит исходный код программы, которая выполняется (то есть, куайн)</dd>
+                    <dt>Команда «9»</dt>
+                    <dd>выводит слова стихотворения 99 Bottles of Beer on the Wall</dd>
+                    <dt>Команда «+»</dt>
+                    <dd>увеличивает на единицу (инкрементирует) счетчик, который больше никак нельзя использовать</dd>
+                </dl>
+                <a href="https://ru.wikipedia.org/wiki/HQ9%2B" target="_blank">Ссылка на вики</a>
+            </div>
+        </section>
+        <section>
+            <h4>Командная строка</h4>
+            <form class="css-cli js-cli">
+                <div class="js-answer css-hidden">
+                    <div>
+                        <span>Команда></span><span class="js-input_command"></span>
+                    </div>
+                    <div class="js-answer"></div>
+                </div>
+                <label>
+                    <span>Команда></span>
+                    <input id="js-cmd_input-active" class="js-cmd_input-active" type="text" autofocus autocomplete="off">
+                </label>
+            </form>
+        </section>
+    </main>
+    <footer>
+        <span>2017-2018</span>
+    </footer>
 </body>
-
 </html>
