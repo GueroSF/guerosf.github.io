@@ -47,6 +47,7 @@ class Interpreter {
   }
 
   private _execute(command: string, value: string): InterpreterResult {
+    this._needBreak = false;
     switch (command) {
       case 'H':
         return this.commandH();
@@ -72,9 +73,17 @@ class Interpreter {
   }
 
   private command9(): InterpreterResult {
-    this._needRepeat = this._countBottle !== 1;
+    let count: number = this._countBottle--,
+        bottle: string = ' bottle' + (count === 1 ? '' : 's');
 
-    return new InterpreterResult(this._countBottle-- + ' bottles of beer on the wall')
+    if (this._countBottle > 0) {
+      this._needRepeat = true;
+    } else {
+      this._needRepeat = false;
+      this._countBottle = 99;
+    }
+
+    return new InterpreterResult( count + bottle + ' of beer on the wall')
   }
 
   private commandPlus(): void {

@@ -45,6 +45,7 @@ var Interpreter = /** @class */ (function () {
         return holder;
     };
     Interpreter.prototype._execute = function (command, value) {
+        this._needBreak = false;
         switch (command) {
             case 'H':
                 return this.commandH();
@@ -67,8 +68,15 @@ var Interpreter = /** @class */ (function () {
         return new InterpreterResult(value);
     };
     Interpreter.prototype.command9 = function () {
-        this._needRepeat = this._countBottle !== 1;
-        return new InterpreterResult(this._countBottle-- + ' bottles of beer on the wall');
+        var count = this._countBottle--, bottle = ' bottle' + (count === 1 ? '' : 's');
+        if (this._countBottle > 0) {
+            this._needRepeat = true;
+        }
+        else {
+            this._needRepeat = false;
+            this._countBottle = 99;
+        }
+        return new InterpreterResult(count + bottle + ' of beer on the wall');
     };
     Interpreter.prototype.commandPlus = function () {
         var inc = 0;
