@@ -1,112 +1,111 @@
-window.onload = function () {
-    var answerElement = document.querySelector('.js-answer');
-    // const clon = (elem) => {
-    //   let parent = elem.closest('.js-cli');
-    //   let clone = parent.cloneNode(true);
-    //   clone.querySelector('input').value = '';
-    //   parent.innerHTML = '<span>Команда> </span><span class="lastCmd">' + elem.value + '</span>';
-    //   document.body.insertBefore(clone, null);
-    //   count = 0;
-    // };
-    var execute = function (input) {
-        var output = function (input, value) {
-            var data = {
-                break: false,
-                repeat: false,
-                text: ''
-            };
-            switch (input) {
-                case 'H':
-                    data.text = 'Hello, world!';
-                    break;
-                case 'Q':
-                    data.text = value;
-                    break;
-                case '9':
-                    data.repeat = countBottle !== 1;
-                    data.text = countBottle-- + ' bottles of beer on the wall';
-                    break;
-                case '+':
-                    var inc = 0;
-                    inc++;
-                    break;
-                default:
-                    data.break = true;
-                    data.text = 'Syntax error';
-                    break;
+var InterpreterResult = /** @class */ (function () {
+    function InterpreterResult(text) {
+        this._text = text;
+    }
+    Object.defineProperty(InterpreterResult.prototype, "text", {
+        get: function () {
+            return this._text;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    return InterpreterResult;
+}());
+var InterpreterResultHolder = /** @class */ (function () {
+    function InterpreterResultHolder() {
+        this._holder = [];
+    }
+    InterpreterResultHolder.prototype.add = function (result) {
+        if (result !== undefined) {
+            this._holder.push(result);
+        }
+    };
+    InterpreterResultHolder.prototype.get = function () {
+        return this._holder;
+    };
+    return InterpreterResultHolder;
+}());
+var Interpreter = /** @class */ (function () {
+    function Interpreter() {
+        this._needBreak = false;
+        this._needRepeat = false;
+        this._countBottle = 99;
+    }
+    Interpreter.prototype.execute = function (command) {
+        var holder = new InterpreterResultHolder();
+        for (var i = 0, len = command.length; i < len; i++) {
+            holder.add(this._execute(command[i], command));
+            while (this._needRepeat) {
+                holder.add(this._execute(command[i], command));
             }
-            return data;
-        };
-        var r = function (command, value) {
-            data = output(command, value);
-            li = document.createElement('li');
-            li.innerText = data.text;
-            ul.appendChild(li);
-            if (data.repeat) {
-                r(command, value);
-            }
-            return data.break;
-        };
-        var ul = document.createElement('ul');
-        var li, data, countBottle = 99;
-        for (var i = 0, len = input.length; i < len; i++) {
-            if (r(input[i], input)) {
+            if (this._needBreak) {
                 break;
             }
         }
+        return holder;
+    };
+    Interpreter.prototype._execute = function (command, value) {
+        switch (command) {
+            case 'H':
+                return this.commandH();
+            case 'Q':
+                return this.commandQ(value);
+            case '9':
+                return this.command9();
+            case '+':
+                this.commandPlus();
+                break;
+            default:
+                this._needBreak = true;
+                return new InterpreterResult('Syntax error');
+        }
+    };
+    Interpreter.prototype.commandH = function () {
+        return new InterpreterResult('Hello, world!');
+    };
+    Interpreter.prototype.commandQ = function (value) {
+        return new InterpreterResult(value);
+    };
+    Interpreter.prototype.command9 = function () {
+        this._needRepeat = this._countBottle !== 1;
+        return new InterpreterResult(this._countBottle-- + ' bottles of beer on the wall');
+    };
+    Interpreter.prototype.commandPlus = function () {
+        var inc = 0;
+        inc++;
+    };
+    return Interpreter;
+}());
+var GenerateUlList = /** @class */ (function () {
+    function GenerateUlList() {
+    }
+    GenerateUlList.prototype.get = function (results) {
+        var ul = this.createUList();
+        results.get().forEach(function (result) {
+            var li = document.createElement('li');
+            li.innerText = result.text;
+            this.appendChild(li);
+        }, ul);
         return ul;
     };
+    GenerateUlList.prototype.createUList = function () {
+        return document.createElement('ul');
+    };
+    return GenerateUlList;
+}());
+window.onload = function () {
+    var answerElement = document.querySelector('.js-answer');
+    var interpreter = new Interpreter();
+    var list = new GenerateUlList();
     document.querySelector('.js-cli').addEventListener('submit', function (e) {
         e.preventDefault();
         var inputCmd = this[0].value;
         this[0].value = null;
+        var holder = interpreter.execute(inputCmd);
         var div = answerElement.cloneNode(true);
         div.classList.remove('css-hidden');
         div.querySelector('.js-input_command').innerHTML = inputCmd;
-        div.querySelector('.js-answer').appendChild(execute(inputCmd));
+        div.querySelector('.js-answer').appendChild(list.get(holder));
         this.insertBefore(div, this.lastElementChild);
-        // document.getElementById('js-cmd_input-active').focus({preventScroll:true});
-        console.dir(this[0].parentElement);
-        // console.dir(parent);
     });
-    // document.body.addEventListener('keypress', (e) => {
-    //   if (e.code == 'Enter') {
-    //     let elem = document.querySelector('.input');
-    //     for (let i = 0; i < elem.value.length; i++) {
-    //       output(elem.value[i], elem.value, (data) => {
-    //         if (data == 0) {
-    //           let div = document.createElement('div');
-    //           div.innerHTML = 'Syntax error';
-    //           document.body.appendChild(div);
-    //           return i = elem.value.length;
-    //         } else {
-    //           let div = document.createElement('div');
-    //           div.innerHTML = data;
-    //           document.body.appendChild(div);
-    //         }
-    //       });
-    //     }
-    //     clon(elem);
-    //     document.querySelector('input').focus();
-    //   }
-    // });
-    // let count = 0;
-    //
-    // document.body.addEventListener('keyup', (e) => {
-    //   let enter = document.querySelectorAll('.lastCmd');
-    //   if (enter.length != 0) {
-    //     if (e.keyCode == 38) {
-    //       cmd.value = enter[count].innerText;
-    //       count++;
-    //     } else if (e.keyCode == 40) {
-    //       cmd.value = enter[count].innerText;
-    //       count--;
-    //     }
-    //     if (count < 0) {
-    //       count = 0;
-    //     } else if (count >= enter.length) {
-    //       count = enter.length - 1;
-    //     }
-    //   }
-    // });
 };

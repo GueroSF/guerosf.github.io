@@ -45,6 +45,10 @@ main dl.css-description dt::after {
     border: 1px solid silver;
 }
 
+.css-answer ul li {
+    list-style: none;
+}
+
 /*.site {*/
     /*min-height: 100%;*/
     /*display: grid;*/
