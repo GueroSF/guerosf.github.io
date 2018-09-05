@@ -45,6 +45,14 @@ main dl.css-description dt::after {
     border: 1px solid silver;
 }
 
+.css-cli label {
+    display: flex;
+}
+
+.css-cli label input {
+    width: 100%;
+}
+
 .css-answer ul li {
     list-style: none;
 }

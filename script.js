@@ -115,5 +115,6 @@ window.onload = function () {
         div.querySelector('.js-input_command').innerHTML = inputCmd;
         div.querySelector('.js-answer').appendChild(list.get(holder));
         this.insertBefore(div, this.lastElementChild);
+        document.getElementById('js-cmd_input-active').scrollIntoView();
     });
 };

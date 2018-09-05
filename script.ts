@@ -130,5 +130,6 @@ window.onload = () => {
 
     this.insertBefore(div, this.lastElementChild);
 
+    document.getElementById('js-cmd_input-active').scrollIntoView();
   });
 };
